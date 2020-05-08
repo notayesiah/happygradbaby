@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<!--
+	NOTES:
+	1. All tokens are represented by '$' sign in the template.
+	2. You can write your code only wherever mentioned.
+	3. All occurrences of existing tokens will be replaced by their appropriate values.
+	4. Blank lines will be removed automatically.
+	5. Remove unnecessary comments before creating your template.
+-->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="authoring-tool" content="Adobe_Animate_CC">
+<title>aisyahgrad</title>
+<!-- write your code here -->
+<style>
+  #animation_container {
+	position:absolute;
+	margin:auto;
+	left:0;right:0;
+	top:0;bottom:0;
+  }
+</style>
+<script src="libs/1.0.0/createjs.min.js"></script>
+<script>
+(function (cjs, an) {
+var p; // shortcut to reference prototypes
+var lib={};var ss={};var img={};
+lib.ssMetadata = [
+		{name:"aisyahgrad_atlas_1", frames: [[0,0,1125,1224]]},
+		{name:"aisyahgrad_atlas_2", frames: [[0,0,1125,1043]]},
+		{name:"aisyahgrad_atlas_3", frames: [[0,0,1045,1105]]},
+		{name:"aisyahgrad_atlas_4", frames: [[1127,792,428,954],[1127,0,591,790],[0,0,1125,982],[0,984,1125,910]]},
+		{name:"aisyahgrad_atlas_5", frames: [[753,1520,1228,138],[426,1111,1254,178],[0,0,1432,251],[0,1291,814,227],[816,1291,789,227],[1191,865,852,227],[0,1749,706,227],[0,1520,751,227],[1191,559,723,304],[1185,253,735,304],[753,1660,767,210],[426,805,763,304],[0,253,661,453],[0,708,424,568],[663,253,520,550]]},
+		{name:"aisyahgrad_atlas_6", frames: [[0,1133,712,98],[0,541,70,38],[524,522,130,60],[762,1711,191,73],[1755,490,230,73],[0,591,748,172],[1463,490,290,82],[458,1241,394,117],[854,1243,394,106],[1250,1243,370,106],[0,1233,456,106],[1238,1135,518,106],[0,433,522,106],[714,1133,522,106],[1463,360,577,128],[685,785,699,173],[0,765,683,181],[0,948,668,178],[750,591,664,192],[1364,960,666,173],[718,0,680,227],[0,222,691,209],[693,229,725,187],[0,0,716,220],[670,960,692,171],[1602,1675,119,178],[1879,1495,125,178],[693,418,768,171],[0,1521,125,178],[1916,1135,129,178],[1758,1135,156,178],[1723,1675,119,178],[127,1521,125,178],[316,1341,129,178],[254,1521,125,178],[840,1531,125,178],[1844,1675,119,178],[1622,1315,156,178],[967,1531,125,178],[1486,1351,129,178],[0,1701,119,178],[1780,1315,156,178],[1094,1531,125,178],[1221,1531,125,178],[447,1360,129,178],[121,1701,119,178],[0,1341,156,178],[1348,1531,125,178],[1475,1531,125,178],[578,1360,129,178],[158,1341,156,178],[381,1540,125,178],[508,1540,125,178],[854,1351,156,178],[709,1360,129,178],[635,1540,125,178],[1617,1495,129,178],[1012,1351,156,178],[1748,1495,129,178],[1170,1351,156,178],[1328,1351,156,178],[1988,0,53,178],[1938,1315,53,178],[1993,1315,53,178],[1965,1675,53,178],[242,1701,53,178],[297,1701,53,178],[1400,0,586,178],[1420,180,586,178],[524,433,107,87],[1416,591,586,178],[1416,771,586,178]]}
+];
+(lib.AnMovieClip = function(){
+	this.currentSoundStreamInMovieclip;
+	this.actionFrames = [];
+	this.soundStreamDuration = new Map();
+	this.streamSoundSymbolsList = [];
+	this.gotoAndPlayForStreamSoundSync = function(positionOrLabel){
+		cjs.MovieClip.prototype.gotoAndPlay.call(this,positionOrLabel);
+	}
+	this.gotoAndPlay = function(positionOrLabel){
+		this.clearAllSoundStreams();
+		this.startStreamSoundsForTargetedFrame(positionOrLabel);
+		cjs.MovieClip.prototype.gotoAndPlay.call(this,positionOrLabel);
+	}
+	this.play = function(){
+		this.clearAllSoundStreams();
+		this.startStreamSoundsForTargetedFrame(this.currentFrame);
+		cjs.MovieClip.prototype.play.call(this);
+	}
+	this.gotoAndStop = function(positionOrLabel){
+		cjs.MovieClip.prototype.gotoAndStop.call(this,positionOrLabel);
+		this.clearAllSoundStreams();
+	}
+	this.stop = function(){
+		cjs.MovieClip.prototype.stop.call(this);
+		this.clearAllSoundStreams();
+	}
+	this.startStreamSoundsForTargetedFrame = function(targetFrame){
+		for(var index=0; index<this.streamSoundSymbolsList.length; index++){
+			if(index <= targetFrame && this.streamSoundSymbolsList[index] != undefined){
+				for(var i=0; i<this.streamSoundSymbolsList[index].length; i++){
+					var sound = this.streamSoundSymbolsList[index][i];
+					if(sound.endFrame > targetFrame){
+						var targetPosition = Math.abs((((targetFrame - sound.startFrame)/lib.properties.fps) * 1000));
+						var instance = playSound(sound.id);
+						var remainingLoop = 0;
+						if(sound.offset){
+							targetPosition = targetPosition + sound.offset;
+						}
+						else if(sound.loop > 1){
+							var loop = targetPosition /instance.duration;
+							remainingLoop = Math.floor(sound.loop - loop);
+							if(targetPosition == 0){ remainingLoop -= 1; }
+							targetPosition = targetPosition % instance.duration;
+						}
+						instance.loop = remainingLoop;
+						instance.position = Math.round(targetPosition);
+						this.InsertIntoSoundStreamData(instance, sound.startFrame, sound.endFrame, sound.loop , sound.offset);
+					}
+				}
+			}
+		}
+	}
+	this.InsertIntoSoundStreamData = function(soundInstance, startIndex, endIndex, loopValue, offsetValue){ 
+ 		this.soundStreamDuration.set({instance:soundInstance}, {start: startIndex, end:endIndex, loop:loopValue, offset:offsetValue});
+	}
+	this.clearAllSoundStreams = function(){
+		var keys = this.soundStreamDuration.keys();
+		for(var i = 0;i<this.soundStreamDuration.size; i++){
+			var key = keys.next().value;
+			key.instance.stop();
+		}
+ 		this.soundStreamDuration.clear();
+		this.currentSoundStreamInMovieclip = undefined;
+	}
+	this.stopSoundStreams = function(currentFrame){
+		if(this.soundStreamDuration.size > 0){
+			var keys = this.soundStreamDuration.keys();
+			for(var i = 0; i< this.soundStreamDuration.size ; i++){
+				var key = keys.next().value; 
+				var value = this.soundStreamDuration.get(key);
+				if((value.end) == currentFrame){
+					key.instance.stop();
+					if(this.currentSoundStreamInMovieclip == key) { this.currentSoundStreamInMovieclip = undefined; }
+					this.soundStreamDuration.delete(key);
+				}
+			}
+		}
+	}
+	this.computeCurrentSoundStreamInstance = function(currentFrame){
+		if(this.currentSoundStreamInMovieclip == undefined){
+			if(this.soundStreamDuration.size > 0){
+				var keys = this.soundStreamDuration.keys();
+				var maxDuration = 0;
+				for(var i=0;i<this.soundStreamDuration.size;i++){
+					var key = keys.next().value;
+					var value = this.soundStreamDuration.get(key);
+					if(value.end > maxDuration){
+						maxDuration = value.end;
+						this.currentSoundStreamInMovieclip = key;
+					}
+				}
+			}
+		}
+	}
+	this.getDesiredFrame = function(currentFrame, calculatedDesiredFrame){
+		for(var frameIndex in this.actionFrames){
+			if((frameIndex > currentFrame) && (frameIndex < calculatedDesiredFrame)){
+				return frameIndex;
+			}
+		}
+		return calculatedDesiredFrame;
+	}
+	this.syncStreamSounds = function(){
+		this.stopSoundStreams(this.currentFrame);
+		this.computeCurrentSoundStreamInstance(this.currentFrame);
+		if(this.currentSoundStreamInMovieclip != undefined){
+			var soundInstance = this.currentSoundStreamInMovieclip.instance;
+			if(soundInstance.position != 0){
+				var soundValue = this.soundStreamDuration.get(this.currentSoundStreamInMovieclip);
+				var soundPosition = (soundValue.offset?(soundInstance.position - soundValue.offset): soundInstance.position);
+				var calculatedDesiredFrame = (soundValue.start)+((soundPosition/1000) * lib.properties.fps);
+				if(soundValue.loop > 1){
+					calculatedDesiredFrame +=(((((soundValue.loop - soundInstance.loop -1)*soundInstance.duration)) / 1000) * lib.properties.fps);
+				}
+				calculatedDesiredFrame = Math.floor(calculatedDesiredFrame);
+				var deltaFrame = calculatedDesiredFrame - this.currentFrame;
+				if(deltaFrame >= 2){
+					this.gotoAndPlayForStreamSoundSync(this.getDesiredFrame(this.currentFrame,calculatedDesiredFrame));
+				}
+			}
+		}
+	}
+}).prototype = p = new cjs.MovieClip();
+// symbols:
+(lib.CachedBmp_82 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(0);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_86 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(0);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_80 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(1);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_78 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(2);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_85 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(1);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_76 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(3);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_84 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(2);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_75 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(4);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_81 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(5);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_74 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(6);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_73 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(7);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_72 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(8);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_71 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(9);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_70 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(10);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_68 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(11);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_69 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(12);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_67 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(13);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_66 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(14);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_62 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(15);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_65 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(16);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_64 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(17);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_63 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(18);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_61 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(19);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_59 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(3);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_58 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(4);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_60 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(5);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_55 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(20);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_56 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(6);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_57 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(7);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_54 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(21);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_53 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(22);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_52 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(23);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_51 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(8);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_50 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(9);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_48 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(10);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_47 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(24);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_49 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(11);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_45 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(25);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_44 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(26);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_46 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(27);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_43 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(28);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_42 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(29);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_41 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(30);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_40 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(31);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_39 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(32);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_37 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(33);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_38 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(34);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_34 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(35);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_35 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(36);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_36 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(37);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_33 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(38);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_32 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(39);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_30 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(40);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_31 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(41);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_29 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(42);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_28 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(43);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_27 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(44);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_25 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(45);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_26 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(46);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_23 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(47);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_24 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(48);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_22 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(49);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_21 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(50);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_20 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(51);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_19 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(52);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_17 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(53);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_18 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(54);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_16 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(55);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_15 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(56);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_14 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(57);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_13 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(58);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_11 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(59);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_12 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(60);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_9 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(61);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_10 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(62);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_8 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(63);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_6 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(64);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_5 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(65);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_3 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(66);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_4 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(67);
+}).prototype = p = new cjs.Sprite();
+(lib._1 = function() {
+	this.initialize(ss["aisyahgrad_atlas_4"]);
+	this.gotoAndStop(0);
+}).prototype = p = new cjs.Sprite();
+(lib._11 = function() {
+	this.initialize(ss["aisyahgrad_atlas_4"]);
+	this.gotoAndStop(1);
+}).prototype = p = new cjs.Sprite();
+(lib._3 = function() {
+	this.initialize(ss["aisyahgrad_atlas_4"]);
+	this.gotoAndStop(2);
+}).prototype = p = new cjs.Sprite();
+(lib._4 = function() {
+	this.initialize(ss["aisyahgrad_atlas_1"]);
+	this.gotoAndStop(0);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_7 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(68);
+}).prototype = p = new cjs.Sprite();
+(lib._10 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(12);
+}).prototype = p = new cjs.Sprite();
+(lib._9 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(13);
+}).prototype = p = new cjs.Sprite();
+(lib._7 = function() {
+	this.initialize(ss["aisyahgrad_atlas_4"]);
+	this.gotoAndStop(3);
+}).prototype = p = new cjs.Sprite();
+(lib._6 = function() {
+	this.initialize(ss["aisyahgrad_atlas_2"]);
+	this.gotoAndStop(0);
+}).prototype = p = new cjs.Sprite();
+(lib.Asset1 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(69);
+}).prototype = p = new cjs.Sprite();
+(lib._2 = function() {
+	this.initialize(ss["aisyahgrad_atlas_3"]);
+	this.gotoAndStop(0);
+}).prototype = p = new cjs.Sprite();
+(lib._5 = function() {
+	this.initialize(ss["aisyahgrad_atlas_5"]);
+	this.gotoAndStop(14);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_2 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(70);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_1 = function() {
+	this.initialize(ss["aisyahgrad_atlas_6"]);
+	this.gotoAndStop(71);
+}).prototype = p = new cjs.Sprite();
+(lib.CachedBmp_88 = function() {
+	this.initialize(img.CachedBmp_88);
+}).prototype = p = new cjs.Bitmap();
+p.nominalBounds = new cjs.Rectangle(0,0,2563,1444);
+(lib.CachedBmp_83 = function() {
+	this.initialize(img.CachedBmp_83);
+}).prototype = p = new cjs.Bitmap();
+p.nominalBounds = new cjs.Rectangle(0,0,2573,1454);
+(lib.CachedBmp_87 = function() {
+	this.initialize(img.CachedBmp_87);
+}).prototype = p = new cjs.Bitmap();
+p.nominalBounds = new cjs.Rectangle(0,0,2563,1444);
+(lib.taptap = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+	// Layer_1
+	this.instance = new lib.CachedBmp_87();
+	this.instance.setTransform(-640.75,-360.85,0.5,0.5);
+	this.instance_1 = new lib.CachedBmp_88();
+	this.instance_1.setTransform(-640.75,-360.85,0.5,0.5);
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.instance}]}).to({state:[]},1).to({state:[{t:this.instance_1}]},2).wait(1));
+	this._renderFirstFrame();
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-640.7,-360.8,1281.5,722);
+(lib.tapscreen = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+	// Layer_1
+	this.instance = new lib.CachedBmp_86();
+	this.instance.setTransform(-306.9,-34.6,0.5,0.5);
+	this.timeline.addTween(cjs.Tween.get(this.instance).to({_off:true},6).wait(4));
+	this._renderFirstFrame();
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-306.9,-34.6,614,69);
+(lib.graduation = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+	// Layer_1
+	this.instance = new lib.CachedBmp_85();
+	this.instance.setTransform(-313.55,-44.4,0.5,0.5);
+	this.timeline.addTween(cjs.Tween.get(this.instance).wait(1));
+	this._renderFirstFrame();
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-313.5,-44.4,627,89);
+(lib.box = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+	// Layer_1
+	this.instance = new lib.CachedBmp_84();
+	this.instance.setTransform(-187.85,-32.9,0.2625,0.2625);
+	this.timeline.addTween(cjs.Tween.get(this.instance).wait(1));
+	this._renderFirstFrame();
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-187.8,-32.9,375.9,65.9);
+(lib.aisyahcute = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+	// Layer_2
+	this.instance = new lib.Asset1();
+	this.instance.setTransform(-133,-255,2.532,2.532);
+	this.timeline.addTween(cjs.Tween.get(this.instance).wait(3).to({x:-131,y:-275},0).wait(3).to({x:-133,y:-207},0).wait(3));
+	// Layer_1
+	this.instance_1 = new lib._2();
+	this.instance_1.setTransform(-172.35,-182.25,0.3299,0.3299);
+	this.timeline.addTween(cjs.Tween.get(this.instance_1).wait(3).to({x:-174,y:-217},0).wait(3).to({x:-172,y:-139},0).wait(3));
+	this._renderFirstFrame();
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-174,-275,346.8,500.6);
+// stage content:
+(lib.aisyahgrad = function(mode,startPosition,loop) {
+if (loop == null) { loop = false; }	this.initialize(mode,startPosition,loop,{});
+	this.actionFrames = [0,78,107];
+	// timeline functions:
+	this.frame_0 = function() {
+		this.clearAllSoundStreams();
+	}
+	this.frame_78 = function() {
+		/* Stop at This Frame
+		The  timeline will stop/pause at the frame where you insert this code.
+		Can also be used to stop/pause the timeline of movieclips.
+		*/
+		this.stop();
+		/* Click to Go to Frame and Play
+		Clicking on the specified symbol instance moves the playhead to the specified frame in the timeline and continues playback from that frame.
+		Can be used on the main timeline or on movie clip timelines.
+		Instructions:
+		1. Replace the number 5 in the code below with the frame number you would like the playhead to move to when the symbol instance is clicked.
+		2.Frame numbers in EaselJS start at 0 instead of 1
+		*/
+		this.button_1.addEventListener("click", fl_ClickToGoToAndPlayFromFrame.bind(this));
+		function fl_ClickToGoToAndPlayFromFrame()
+		{
+			this.gotoAndPlay(79);
+		}
+	}
+	this.frame_107 = function() {
+		/* Stop at This Frame
+		The  timeline will stop/pause at the frame where you insert this code.
+		Can also be used to stop/pause the timeline of movieclips.
+		*/
+		this.stop();
+	}
+	// actions tween:
+	this.timeline.addTween(cjs.Tween.get(this).call(this.frame_0).wait(78).call(this.frame_78).wait(29).call(this.frame_107).wait(1));
+	// button
+	this.button_1 = new lib.taptap();
+	this.button_1.name = "button_1";
+	this.button_1.setTransform(648.75,356.85,0.9157,0.9004);
+	this.button_1._off = true;
+	new cjs.ButtonHelper(this.button_1, 0, 1, 2, false, new lib.taptap(), 3);
+	this.timeline.addTween(cjs.Tween.get(this.button_1).wait(78).to({_off:false},0).to({_off:true},1).wait(29));
+	// faces
+	this.instance = new lib._1();
+	this.instance.setTransform(60,31,0.2705,0.2705);
+	this.instance_1 = new lib._4();
+	this.instance_1.setTransform(1005,321,0.203,0.203);
+	this.instance_2 = new lib._6();
+	this.instance_2.setTransform(777,115,0.147,0.147);
+	this.instance_3 = new lib._9();
+	this.instance_3.setTransform(330,369,0.2705,0.2705);
+	this.instance_4 = new lib._11();
+	this.instance_4.setTransform(1039,31,0.2827,0.2827);
+	this.instance_5 = new lib._3();
+	this.instance_5.setTransform(28,467,0.2373,0.2373);
+	this.instance_6 = new lib._5();
+	this.instance_6.setTransform(888.75,412.6,0.1541,0.1541,30.2193);
+	this.instance_7 = new lib._5();
+	this.instance_7.setTransform(888.75,412.6,0.1541,0.1541,30.2193);
+	this.instance_8 = new lib._5();
+	this.instance_8.setTransform(888.75,412.6,0.1541,0.1541,30.2193);
+	this.instance_9 = new lib._7();
+	this.instance_9.setTransform(529,31,0.1681,0.1681);
+	this.instance_10 = new lib._10();
+	this.instance_10.setTransform(41,321,0.2724,0.2724);
+	this.instance_11 = new lib._2();
+	this.instance_11.setTransform(895,164,0.3299,0.3299);
+	this.instance_12 = new lib.aisyahcute();
+	this.instance_12.setTransform(189.9,339.85);
+	this.instance_13 = new lib.aisyahcute();
+	this.instance_13.setTransform(1067.35,346.25);
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[]}).to({state:[{t:this.instance}]},79).to({state:[{t:this.instance},{t:this.instance_1}]},3).to({state:[{t:this.instance},{t:this.instance_1},{t:this.instance_2}]},3).to({state:[{t:this.instance},{t:this.instance_1},{t:this.instance_2},{t:this.instance_3}]},3).to({state:[{t:this.instance},{t:this.instance_1},{t:this.instance_2},{t:this.instance_3},{t:this.instance_4}]},3).to({state:[{t:this.instance},{t:this.instance_1},{t:this.instance_2},{t:this.instance_3},{t:this.instance_4},{t:this.instance_5}]},3).to({state:[{t:this.instance},{t:this.instance_1},{t:this.instance_2},{t:this.instance_3},{t:this.instance_4},{t:this.instance_5},{t:this.instance_6,p:{scaleX:0.1541,scaleY:0.1541,rotation:30.2193,x:888.75,y:412.6}}]},3).to({state:[{t:this.instance},{t:this.instance_1},{t:this.instance_2},{t:this.instance_3},{t:this.instance_4},{t:this.instance_5},{t:this.instance_7,p:{scaleX:0.1541,scaleY:0.1541,rotation:30.2193,x:888.75,y:412.6}},{t:this.instance_6,p:{scaleX:0.1463,scaleY:0.1463,rotation:-14.7028,x:321,y:150.95}}]},1).to({state:[{t:this.instance},{t:this.instance_1},{t:this.instance_2},{t:this.instance_3},{t:this.instance_4},{t:this.instance_5},{t:this.instance_8},{t:this.instance_7,p:{scaleX:0.1463,scaleY:0.1463,rotation:-14.7028,x:321,y:150.95}},{t:this.instance_6,p:{scaleX:0.1773,scaleY:0.1773,rotation:0,x:362,y:570}}]},1).to({state:[{t:this.instance},{t:this.instance_1},{t:this.instance_2},{t:this.instance_3},{t:this.instance_4},{t:this.instance_5},{t:this.instance_8},{t:this.instance_7,p:{scaleX:0.1463,scaleY:0.1463,rotation:-14.7028,x:321,y:150.95}},{t:this.instance_6,p:{scaleX:0.1773,scaleY:0.1773,rotation:0,x:362,y:570}},{t:this.instance_9}]},1).to({state:[{t:this.instance},{t:this.instance_1},{t:this.instance_2},{t:this.instance_3},{t:this.instance_4},{t:this.instance_5},{t:this.instance_8},{t:this.instance_7,p:{scaleX:0.1463,scaleY:0.1463,rotation:-14.7028,x:321,y:150.95}},{t:this.instance_6,p:{scaleX:0.1773,scaleY:0.1773,rotation:0,x:362,y:570}},{t:this.instance_9},{t:this.instance_10}]},3).to({state:[{t:this.instance_11}]},3).to({state:[{t:this.instance_13},{t:this.instance_12}]},1).wait(1));
+	// tap_screen
+	this.instance_14 = new lib.tapscreen();
+	this.instance_14.setTransform(635.55,83.1);
+	this.instance_14._off = true;
+	this.timeline.addTween(cjs.Tween.get(this.instance_14).wait(78).to({_off:false},0).to({_off:true},1).wait(29));
+	// aisyah____
+	this.instance_15 = new lib.CachedBmp_1();
+	this.instance_15.setTransform(474.45,378,0.5,0.5);
+	this.instance_16 = new lib.CachedBmp_3();
+	this.instance_16.setTransform(761.55,378,0.5,0.5);
+	this.instance_17 = new lib.CachedBmp_2();
+	this.instance_17.setTransform(468.45,378,0.5,0.5);
+	this.instance_18 = new lib.CachedBmp_6();
+	this.instance_18.setTransform(781.85,378,0.5,0.5);
+	this.instance_19 = new lib.CachedBmp_5();
+	this.instance_19.setTransform(755.55,378,0.5,0.5);
+	this.instance_20 = new lib.CachedBmp_4();
+	this.instance_20.setTransform(462.45,378,0.5,0.5);
+	this.instance_21 = new lib.CachedBmp_10();
+	this.instance_21.setTransform(790.15,378,0.5,0.5);
+	this.instance_22 = new lib.CachedBmp_9();
+	this.instance_22.setTransform(763.85,378,0.5,0.5);
+	this.instance_23 = new lib.CachedBmp_8();
+	this.instance_23.setTransform(737.55,378,0.5,0.5);
+	this.instance_24 = new lib.CachedBmp_7();
+	this.instance_24.setTransform(444.45,378,0.5,0.5);
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[]}).to({state:[{t:this.instance_15}]},29).to({state:[{t:this.instance_17},{t:this.instance_16}]},1).to({state:[{t:this.instance_20},{t:this.instance_19},{t:this.instance_18}]},1).to({state:[{t:this.instance_24},{t:this.instance_23},{t:this.instance_22},{t:this.instance_21}]},1).wait(76));
+	// happy
+	this.instance_25 = new lib.CachedBmp_11();
+	this.instance_25.setTransform(489.85,200.3,0.5,0.5);
+	this.instance_26 = new lib.CachedBmp_13();
+	this.instance_26.setTransform(556.05,200.3,0.5,0.5);
+	this.instance_27 = new lib.CachedBmp_12();
+	this.instance_27.setTransform(489.85,200.3,0.5,0.5);
+	this.instance_28 = new lib.CachedBmp_16();
+	this.instance_28.setTransform(608.6,200.3,0.5,0.5);
+	this.instance_29 = new lib.CachedBmp_15();
+	this.instance_29.setTransform(556.05,200.3,0.5,0.5);
+	this.instance_30 = new lib.CachedBmp_14();
+	this.instance_30.setTransform(489.85,200.3,0.5,0.5);
+	this.instance_31 = new lib.CachedBmp_20();
+	this.instance_31.setTransform(655.6,200.3,0.5,0.5);
+	this.instance_32 = new lib.CachedBmp_19();
+	this.instance_32.setTransform(608.6,200.3,0.5,0.5);
+	this.instance_33 = new lib.CachedBmp_18();
+	this.instance_33.setTransform(556.05,200.3,0.5,0.5);
+	this.instance_34 = new lib.CachedBmp_17();
+	this.instance_34.setTransform(489.85,200.3,0.5,0.5);
+	this.instance_35 = new lib.CachedBmp_25();
+	this.instance_35.setTransform(708.05,200.3,0.5,0.5);
+	this.instance_36 = new lib.CachedBmp_24();
+	this.instance_36.setTransform(655.6,200.3,0.5,0.5);
+	this.instance_37 = new lib.CachedBmp_23();
+	this.instance_37.setTransform(608.6,200.3,0.5,0.5);
+	this.instance_38 = new lib.CachedBmp_22();
+	this.instance_38.setTransform(556.05,200.3,0.5,0.5);
+	this.instance_39 = new lib.CachedBmp_21();
+	this.instance_39.setTransform(489.85,200.3,0.5,0.5);
+	this.instance_40 = new lib.CachedBmp_30();
+	this.instance_40.setTransform(708.05,200.3,0.5,0.5);
+	this.instance_41 = new lib.CachedBmp_29();
+	this.instance_41.setTransform(655.6,200.3,0.5,0.5);
+	this.instance_42 = new lib.CachedBmp_28();
+	this.instance_42.setTransform(608.6,200.3,0.5,0.5);
+	this.instance_43 = new lib.CachedBmp_27();
+	this.instance_43.setTransform(556.05,200.3,0.5,0.5);
+	this.instance_44 = new lib.CachedBmp_26();
+	this.instance_44.setTransform(489.85,200.3,0.5,0.5);
+	this.instance_45 = new lib.CachedBmp_35();
+	this.instance_45.setTransform(708.05,200.3,0.5,0.5);
+	this.instance_46 = new lib.CachedBmp_34();
+	this.instance_46.setTransform(655.6,200.3,0.5,0.5);
+	this.instance_47 = new lib.CachedBmp_33();
+	this.instance_47.setTransform(608.6,200.3,0.5,0.5);
+	this.instance_48 = new lib.CachedBmp_32();
+	this.instance_48.setTransform(556.05,200.3,0.5,0.5);
+	this.instance_49 = new lib.CachedBmp_31();
+	this.instance_49.setTransform(489.85,200.3,0.5,0.5);
+	this.instance_50 = new lib.graduation("synched",0);
+	this.instance_50.setTransform(628.9,333.55);
+	this.instance_51 = new lib.CachedBmp_40();
+	this.instance_51.setTransform(708.05,200.3,0.5,0.5);
+	this.instance_52 = new lib.CachedBmp_39();
+	this.instance_52.setTransform(655.6,200.3,0.5,0.5);
+	this.instance_53 = new lib.CachedBmp_38();
+	this.instance_53.setTransform(608.6,200.3,0.5,0.5);
+	this.instance_54 = new lib.CachedBmp_37();
+	this.instance_54.setTransform(556.05,200.3,0.5,0.5);
+	this.instance_55 = new lib.CachedBmp_36();
+	this.instance_55.setTransform(489.85,200.3,0.5,0.5);
+	this.instance_56 = new lib.CachedBmp_45();
+	this.instance_56.setTransform(708.05,200.3,0.5,0.5);
+	this.instance_57 = new lib.CachedBmp_44();
+	this.instance_57.setTransform(655.6,200.3,0.5,0.5);
+	this.instance_58 = new lib.CachedBmp_43();
+	this.instance_58.setTransform(608.6,200.3,0.5,0.5);
+	this.instance_59 = new lib.CachedBmp_42();
+	this.instance_59.setTransform(556.05,200.3,0.5,0.5);
+	this.instance_60 = new lib.CachedBmp_41();
+	this.instance_60.setTransform(489.85,200.3,0.5,0.5);
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.instance_25}]}).to({state:[{t:this.instance_27},{t:this.instance_26}]},3).to({state:[{t:this.instance_30},{t:this.instance_29},{t:this.instance_28}]},3).to({state:[{t:this.instance_34},{t:this.instance_33},{t:this.instance_32},{t:this.instance_31}]},3).to({state:[{t:this.instance_39},{t:this.instance_38},{t:this.instance_37},{t:this.instance_36},{t:this.instance_35}]},3).to({state:[{t:this.instance_44},{t:this.instance_43},{t:this.instance_42},{t:this.instance_41},{t:this.instance_40}]},3).to({state:[{t:this.instance_49},{t:this.instance_48},{t:this.instance_47},{t:this.instance_46},{t:this.instance_45}]},3).to({state:[{t:this.instance_55},{t:this.instance_54},{t:this.instance_53},{t:this.instance_52},{t:this.instance_51},{t:this.instance_50}]},11).to({state:[{t:this.instance_60},{t:this.instance_59},{t:this.instance_58},{t:this.instance_57},{t:this.instance_56},{t:this.instance_50}]},3).wait(76));
+	// graduation
+	this.instance_61 = new lib.graduation("synched",0);
+	this.instance_61.setTransform(628.9,333.55,0.1802,0.1802,0,180,0);
+	this.instance_61._off = true;
+	this.timeline.addTween(cjs.Tween.get(this.instance_61).wait(18).to({_off:false},0).to({scaleX:1,scaleY:1,skewX:0},11).to({startPosition:0},1).to({startPosition:0},2).wait(76));
+	// Layer_6
+	this.instance_62 = new lib.CachedBmp_46();
+	this.instance_62.setTransform(470.95,522.15,0.5,0.5);
+	this.instance_63 = new lib.CachedBmp_47();
+	this.instance_63.setTransform(489.85,522.15,0.5,0.5);
+	this.instance_64 = new lib.CachedBmp_48();
+	this.instance_64.setTransform(488.85,516.8,0.5,0.5);
+	this.instance_65 = new lib.CachedBmp_49();
+	this.instance_65.setTransform(484.9,503.95,0.5,0.5);
+	this.instance_66 = new lib.CachedBmp_50();
+	this.instance_66.setTransform(483.95,503.95,0.5,0.5);
+	this.instance_67 = new lib.CachedBmp_51();
+	this.instance_67.setTransform(482.95,507.95,0.5,0.5);
+	this.instance_68 = new lib.CachedBmp_52();
+	this.instance_68.setTransform(491.95,513.95,0.5,0.5);
+	this.instance_69 = new lib.CachedBmp_53();
+	this.instance_69.setTransform(482.95,517.45,0.5,0.5);
+	this.instance_70 = new lib.CachedBmp_54();
+	this.instance_70.setTransform(486.95,519.45,0.5,0.5);
+	this.instance_71 = new lib.CachedBmp_55();
+	this.instance_71.setTransform(481.45,516.95,0.5,0.5);
+	this.instance_72 = new lib.CachedBmp_56();
+	this.instance_72.setTransform(486.95,518.95,0.5,0.5);
+	this.instance_73 = new lib.CachedBmp_57();
+	this.instance_73.setTransform(490.95,522.15,0.5,0.5);
+	this.instance_74 = new lib.CachedBmp_58();
+	this.instance_74.setTransform(490.45,522.15,0.5,0.5);
+	this.instance_75 = new lib.CachedBmp_59();
+	this.instance_75.setTransform(490.95,522.15,0.5,0.5);
+	this.instance_76 = new lib.CachedBmp_60();
+	this.instance_76.setTransform(486.45,522.15,0.5,0.5);
+	this.instance_77 = new lib.CachedBmp_61();
+	this.instance_77.setTransform(486.45,519.45,0.5,0.5);
+	this.instance_78 = new lib.CachedBmp_62();
+	this.instance_78.setTransform(482.45,520.55,0.5,0.5);
+	this.instance_79 = new lib.CachedBmp_63();
+	this.instance_79.setTransform(483.45,513.45,0.5,0.5);
+	this.instance_80 = new lib.CachedBmp_64();
+	this.instance_80.setTransform(481.45,520.45,0.5,0.5);
+	this.instance_81 = new lib.CachedBmp_65();
+	this.instance_81.setTransform(477.95,533.95,0.5,0.5);
+	this.instance_82 = new lib.CachedBmp_66();
+	this.instance_82.setTransform(477.95,560.45,0.5,0.5);
+	this.instance_83 = new lib.CachedBmp_67();
+	this.instance_83.setTransform(512.95,558.95,0.5,0.5);
+	this.instance_84 = new lib.CachedBmp_68();
+	this.instance_84.setTransform(526.95,557.45,0.5,0.5);
+	this.instance_85 = new lib.CachedBmp_69();
+	this.instance_85.setTransform(539.45,555.55,0.5,0.5);
+	this.instance_86 = new lib.CachedBmp_70();
+	this.instance_86.setTransform(554.6,555.55,0.5,0.5);
+	this.instance_87 = new lib.CachedBmp_71();
+	this.instance_87.setTransform(576.1,555.55,0.5,0.5);
+	this.instance_88 = new lib.CachedBmp_72();
+	this.instance_88.setTransform(584.45,555.55,0.5,0.5);
+	this.instance_89 = new lib.CachedBmp_73();
+	this.instance_89.setTransform(603.45,559.95,0.5,0.5);
+	this.instance_90 = new lib.CachedBmp_74();
+	this.instance_90.setTransform(635.5,559.95,0.5,0.5);
+	this.instance_91 = new lib.CachedBmp_75();
+	this.instance_91.setTransform(649.9,558.3,0.5,0.5);
+	this.instance_92 = new lib.CachedBmp_76();
+	this.instance_92.setTransform(668.3,558.3,0.5,0.5);
+	this.instance_93 = new lib.CachedBmp_78();
+	this.instance_93.setTransform(696.25,559.5,0.5,0.5);
+	this.instance_94 = new lib.CachedBmp_80();
+	this.instance_94.setTransform(727.45,570.3,0.5,0.5);
+	this.instance_95 = new lib.box("synched",0);
+	this.instance_95.setTransform(1095.65,632.75,1.9048,1);
+	this.instance_95._off = true;
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[]}).to({state:[{t:this.instance_62}]},33).to({state:[{t:this.instance_63}]},1).to({state:[{t:this.instance_64}]},1).to({state:[{t:this.instance_65}]},1).to({state:[{t:this.instance_66}]},1).to({state:[{t:this.instance_67}]},1).to({state:[{t:this.instance_68}]},1).to({state:[{t:this.instance_69}]},1).to({state:[{t:this.instance_70}]},1).to({state:[{t:this.instance_71}]},1).to({state:[{t:this.instance_72}]},1).to({state:[{t:this.instance_73}]},1).to({state:[{t:this.instance_74}]},1).to({state:[{t:this.instance_75}]},1).to({state:[{t:this.instance_76}]},1).to({state:[{t:this.instance_77}]},1).to({state:[{t:this.instance_78}]},1).to({state:[{t:this.instance_79}]},1).to({state:[{t:this.instance_80}]},1).to({state:[{t:this.instance_81}]},1).to({state:[{t:this.instance_82}]},1).to({state:[{t:this.instance_83}]},1).to({state:[{t:this.instance_84}]},1).to({state:[{t:this.instance_85}]},1).to({state:[{t:this.instance_86}]},1).to({state:[{t:this.instance_87}]},1).to({state:[{t:this.instance_88}]},1).to({state:[{t:this.instance_89}]},1).to({state:[{t:this.instance_90}]},1).to({state:[{t:this.instance_91}]},1).to({state:[{t:this.instance_92}]},1).to({state:[{t:this.instance_93,p:{x:696.25,y:559.5}}]},1).to({state:[{t:this.instance_93,p:{x:708.85,y:560.7}}]},1).to({state:[{t:this.instance_94,p:{x:727.45,y:570.3}}]},1).to({state:[{t:this.instance_94,p:{x:741.05,y:570.7}}]},1).to({state:[]},1).to({state:[{t:this.instance_95}]},1).to({state:[{t:this.instance_95}]},8).to({state:[]},1).to({state:[]},1).wait(29));
+	this.timeline.addTween(cjs.Tween.get(this.instance_95).wait(69).to({_off:false},0).to({scaleX:0.1325,x:1082.95,y:634.75},8).to({_off:true},1).wait(30));
+	// Layer_5
+	this.instance_96 = new lib.CachedBmp_81();
+	this.instance_96.setTransform(444.45,522.15,0.5,0.5);
+	this.instance_96._off = true;
+	this.timeline.addTween(cjs.Tween.get(this.instance_96).wait(33).to({_off:false},0).wait(75));
+	// Layer_7
+	this.instance_97 = new lib.CachedBmp_82();
+	this.instance_97.setTransform(718.2,618.35,0.5,0.5);
+	this.instance_97._off = true;
+	this.timeline.addTween(cjs.Tween.get(this.instance_97).wait(69).to({_off:false},0).wait(39));
+	// background
+	this.instance_98 = new lib.CachedBmp_83();
+	this.instance_98.setTransform(-6.4,-4.45,0.5,0.5);
+	this.timeline.addTween(cjs.Tween.get(this.instance_98).wait(108));
+	this._renderFirstFrame();
+}).prototype = p = new lib.AnMovieClip();
+p.nominalBounds = new cjs.Rectangle(633.6,355.6,820.1999999999999,367);
+// library properties:
+lib.properties = {
+	id: 'DDA554EF60B94467A3F48E8259EF936F',
+	width: 1280,
+	height: 720,
+	fps: 24,
+	color: "#FFFFFF",
+	opacity: 1.00,
+	manifest: [
+		{src:"images/CachedBmp_88.png", id:"CachedBmp_88"},
+		{src:"images/CachedBmp_83.png", id:"CachedBmp_83"},
+		{src:"images/CachedBmp_87.png", id:"CachedBmp_87"},
+		{src:"images/aisyahgrad_atlas_1.png", id:"aisyahgrad_atlas_1"},
+		{src:"images/aisyahgrad_atlas_2.png", id:"aisyahgrad_atlas_2"},
+		{src:"images/aisyahgrad_atlas_3.png", id:"aisyahgrad_atlas_3"},
+		{src:"images/aisyahgrad_atlas_4.png", id:"aisyahgrad_atlas_4"},
+		{src:"images/aisyahgrad_atlas_5.png", id:"aisyahgrad_atlas_5"},
+		{src:"images/aisyahgrad_atlas_6.png", id:"aisyahgrad_atlas_6"}
+	],
+	preloads: []
+};
+// bootstrap callback support:
+(lib.Stage = function(canvas) {
+	createjs.Stage.call(this, canvas);
+}).prototype = p = new createjs.Stage();
+p.setAutoPlay = function(autoPlay) {
+	this.tickEnabled = autoPlay;
+}
+p.play = function() { this.tickEnabled = true; this.getChildAt(0).gotoAndPlay(this.getTimelinePosition()) }
+p.stop = function(ms) { if(ms) this.seek(ms); this.tickEnabled = false; }
+p.seek = function(ms) { this.tickEnabled = true; this.getChildAt(0).gotoAndStop(lib.properties.fps * ms / 1000); }
+p.getDuration = function() { return this.getChildAt(0).totalFrames / lib.properties.fps * 1000; }
+p.getTimelinePosition = function() { return this.getChildAt(0).currentFrame / lib.properties.fps * 1000; }
+an.bootcompsLoaded = an.bootcompsLoaded || [];
+if(!an.bootstrapListeners) {
+	an.bootstrapListeners=[];
+}
+an.bootstrapCallback=function(fnCallback) {
+	an.bootstrapListeners.push(fnCallback);
+	if(an.bootcompsLoaded.length > 0) {
+		for(var i=0; i<an.bootcompsLoaded.length; ++i) {
+			fnCallback(an.bootcompsLoaded[i]);
+		}
+	}
+};
+an.compositions = an.compositions || {};
+an.compositions['DDA554EF60B94467A3F48E8259EF936F'] = {
+	getStage: function() { return exportRoot.stage; },
+	getLibrary: function() { return lib; },
+	getSpriteSheet: function() { return ss; },
+	getImages: function() { return img; }
+};
+an.compositionLoaded = function(id) {
+	an.bootcompsLoaded.push(id);
+	for(var j=0; j<an.bootstrapListeners.length; j++) {
+		an.bootstrapListeners[j](id);
+	}
+}
+an.getComposition = function(id) {
+	return an.compositions[id];
+}
+an.makeResponsive = function(isResp, respDim, isScale, scaleType, domContainers) {		
+	var lastW, lastH, lastS=1;		
+	window.addEventListener('resize', resizeCanvas);		
+	resizeCanvas();		
+	function resizeCanvas() {			
+		var w = lib.properties.width, h = lib.properties.height;			
+		var iw = window.innerWidth, ih=window.innerHeight;			
+		var pRatio = window.devicePixelRatio || 1, xRatio=iw/w, yRatio=ih/h, sRatio=1;			
+		if(isResp) {                
+			if((respDim=='width'&&lastW==iw) || (respDim=='height'&&lastH==ih)) {                    
+				sRatio = lastS;                
+			}				
+			else if(!isScale) {					
+				if(iw<w || ih<h)						
+					sRatio = Math.min(xRatio, yRatio);				
+			}				
+			else if(scaleType==1) {					
+				sRatio = Math.min(xRatio, yRatio);				
+			}				
+			else if(scaleType==2) {					
+				sRatio = Math.max(xRatio, yRatio);				
+			}			
+		}			
+		domContainers[0].width = w * pRatio * sRatio;			
+		domContainers[0].height = h * pRatio * sRatio;			
+		domContainers.forEach(function(container) {				
+			container.style.width = w * sRatio + 'px';				
+			container.style.height = h * sRatio + 'px';			
+		});			
+		stage.scaleX = pRatio*sRatio;			
+		stage.scaleY = pRatio*sRatio;			
+		lastW = iw; lastH = ih; lastS = sRatio;            
+		stage.tickOnUpdate = false;            
+		stage.update();            
+		stage.tickOnUpdate = true;		
+	}
+}
+an.handleSoundStreamOnTick = function(event) {
+	if(!event.paused){
+		var stageChild = stage.getChildAt(0);
+		if(!stageChild.paused){
+			stageChild.syncStreamSounds();
+		}
+	}
+}
+})(createjs = createjs||{}, AdobeAn = AdobeAn||{});
+var createjs, AdobeAn;
+</script>
+<script>
+var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
+function init() {
+	canvas = document.getElementById("canvas");
+	anim_container = document.getElementById("animation_container");
+	dom_overlay_container = document.getElementById("dom_overlay_container");
+	var comp=AdobeAn.getComposition("DDA554EF60B94467A3F48E8259EF936F");
+	var lib=comp.getLibrary();
+	var loader = new createjs.LoadQueue(false);
+	loader.addEventListener("fileload", function(evt){handleFileLoad(evt,comp)});
+	loader.addEventListener("complete", function(evt){handleComplete(evt,comp)});
+	var lib=comp.getLibrary();
+	loader.loadManifest(lib.properties.manifest);
+}
+function handleFileLoad(evt, comp) {
+	var images=comp.getImages();	
+	if (evt && (evt.item.type == "image")) { images[evt.item.id] = evt.result; }	
+}
+function handleComplete(evt,comp) {
+	//This function is always called, irrespective of the content. You can use the variable "stage" after it is created in token create_stage.
+	var lib=comp.getLibrary();
+	var ss=comp.getSpriteSheet();
+	var queue = evt.target;
+	var ssMetadata = lib.ssMetadata;
+	for(i=0; i<ssMetadata.length; i++) {
+		ss[ssMetadata[i].name] = new createjs.SpriteSheet( {"images": [queue.getResult(ssMetadata[i].name)], "frames": ssMetadata[i].frames} )
+	}
+	exportRoot = new lib.aisyahgrad();
+	stage = new lib.Stage(canvas);
+	stage.enableMouseOver();	
+	//Registers the "tick" event listener.
+	fnStartAnimation = function() {
+		stage.addChild(exportRoot);
+		createjs.Ticker.framerate = lib.properties.fps;
+		createjs.Ticker.addEventListener("tick", stage);
+	}	    
+	//Code to support hidpi screens and responsive scaling.
+	AdobeAn.makeResponsive(true,'both',true,1,[canvas,anim_container,dom_overlay_container]);	
+	AdobeAn.compositionLoaded(lib.properties.id);
+	fnStartAnimation();
+}
+</script>
+<!-- write your code here -->
+</head>
+<body onload="init();" style="margin:0px;">
+	<div id="animation_container" style="background-color:rgba(255, 255, 255, 1.00); width:1280px; height:720px">
+		<canvas id="canvas" width="1280" height="720" style="position: absolute; display: block; background-color:rgba(255, 255, 255, 1.00);"></canvas>
+		<div id="dom_overlay_container" style="pointer-events:none; overflow:hidden; width:1280px; height:720px; position: absolute; left: 0px; top: 0px; display: block;">
+		</div>
+	</div>
+</body>
+</html>
